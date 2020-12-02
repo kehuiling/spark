@@ -1,0 +1,4 @@
+Hello scala
+Hello spark
+Hello world
+Hello hadoop
