@@ -1,5 +1,6 @@
 package cn.demo.spark.rdd
 
+import com.alibaba.fastjson.JSON
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.{Seconds, StreamingContext}
@@ -12,26 +13,11 @@ object WordCount {
 
   def main(args: Array[String]): Unit = {
     val config: SparkConf = new SparkConf().setMaster("local[*]").setAppName("WordCount")
-//    val sc = new SparkContext(config)
-//
-//    //println(sc)
-//
-//    val lines: RDD[String] = sc.textFile("in/word.txt")
-//
-//    val words: RDD[String] = lines.flatMap(_.split(" "))
-//
-//    val wordToOne: RDD[(String,Int)] = words.map((_,1))
-//
-//    val wordToSum: RDD[(String,Int)] = wordToOne.reduceByKey(_+_)
-//
-//    val result: Array[(String,Int)] = wordToSum.collect()
-//
-//    result.foreach(println)
 
     val ssc = new StreamingContext(config,Seconds(5))
 
     val kafkaParams = Map[String, Object](
-      "bootstrap.servers" -> "192.168.224.130:9092",
+      "bootstrap.servers" -> "192.168.92.128:9092",
       "key.deserializer" -> classOf[StringDeserializer],
       "value.deserializer" -> classOf[StringDeserializer],
       "group.id" -> "use_a_separate_group_id_for_each_stream",
@@ -39,7 +25,7 @@ object WordCount {
       "enable.auto.commit" -> (false: java.lang.Boolean)
     )
 
-    val topics = Array("myTopic")
+    val topics = Array("data_transfer")
 
     val kafkaDirectStream = KafkaUtils.createDirectStream[String,String](
       ssc,
@@ -47,7 +33,14 @@ object WordCount {
       Subscribe[String, String](topics, kafkaParams)
     )
 
-    kafkaDirectStream.map(_.value).print()
+    val platName = kafkaDirectStream.map(_.value).foreachRDD(rdd => {
+      rdd.foreach(record => {
+        val json = JSON.parseObject(record)
+        val platformName = json.get("plat_name")
+        System.out.println("platName:"+platformName)
+      })
+    })
+
 
     //开始计算
     ssc.start()

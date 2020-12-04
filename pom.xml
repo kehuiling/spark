@@ -166,11 +166,11 @@
             <version>7.7.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.phoenix</groupId>
-            <artifactId>phoenix-spark</artifactId>
-            <version>4.14.1-cdh5.16.2</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.phoenix</groupId>-->
+<!--            <artifactId>phoenix-spark</artifactId>-->
+<!--            <version>4.14.1-cdh5.16.2</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.lmax</groupId>
@@ -194,6 +194,11 @@
             <groupId>ch.ethz.ganymed</groupId>
             <artifactId>ganymed-ssh2</artifactId>
             <version>build210</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.49</version>
         </dependency>
 
     </dependencies>
